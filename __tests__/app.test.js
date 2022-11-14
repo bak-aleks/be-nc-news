@@ -17,10 +17,22 @@ describe('1. GET/api/topics', ()=>{
         .get('/api/topics')
         .expect(200)
         .then((response)=>{
+            expect(response.body.topics.length).toBeGreaterThan(0)
             expect(response.body.topics).toEqual(expect.any(Array));
-            expect(Object.keys(response.body.topics[0])).toEqual(
-                expect.arrayContaining(['slug', 'description'])
-            )
+            response.body.topics.forEach((topic)=>{
+                expect(topic).toEqual(expect.objectContaining({
+                    description: expect.any(String),
+                    slug: expect.any(String)
+                }))
+            })
         })
+    })
+})
+test('404 status', ()=>{
+    return request(app)
+    .get('/api/notaAValidRoute')
+    .expect(404)
+    .then(({body})=>{
+        expect(body.msg).toBe('Route does not exist')
     })
 })
