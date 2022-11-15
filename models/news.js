@@ -1,4 +1,5 @@
 const db = require('../db/connection')
+const{checkArticleExists} = require('../utils/db.js')
 
 exports.selectTopics = ()=>{
     return db.query("SELECT * FROM topics;").then((result)=>result.rows);
@@ -20,8 +21,6 @@ exports.selectArticleById = (article_id) =>{
     return db
     .query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
     .then((result)=>{
-        //console.log(result.rows[0])
-        //const article = result.rows[0];
         if(result.rows.length === 0){
             return Promise.reject({status:404, msg:'Article does not exist'
             })
@@ -29,3 +28,14 @@ exports.selectArticleById = (article_id) =>{
         return result.rows[0]
     })
 };
+
+exports.selectCommentsByArticleId = (article_id) =>{
+    return checkArticleExists(article_id)
+    .then(()=>{
+        return db
+    .query(`SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;`, [article_id])
+    })
+    .then((response)=>{
+        return response.rows;
+    }) 
+}

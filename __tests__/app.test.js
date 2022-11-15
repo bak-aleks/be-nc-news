@@ -71,6 +71,37 @@ describe('3.GET/api/articles/:article_id', ()=>{
         })
     })
 })
+describe('4.GET/api/articles/:article_id/comments', ()=>{
+    test('status 200, should respond with an array of comments for given article id', ()=>{
+        return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then((response)=>{
+            expect(response.body.comments.length).toBeGreaterThan(0)
+            expect(response.body.comments).toEqual(expect.any(Array))
+            expect(response.body.comments).toBeSortedBy('created_at', {descending:true})
+            response.body.comments.forEach((comment)=>{
+                expect(comment).toEqual(expect.objectContaining({
+                    author: expect.any(String),
+                    article_id:expect.toBeNumber(1),
+                    comment_id:expect.any(Number),
+                    created_at:expect.any(String),
+                    votes:expect.any(Number),
+                    body:expect.any(String)
+                }))}
+            )
+        })
+    })
+})
+test('GET:404 sends an appropriate error message when given a valid but non-existend id',()=>{
+    return request(app)
+    .get('/api/articles/999/comments')
+    .expect(404)
+    .then(({body})=>{
+        expect(body.msg).toBe('Article not found')
+    })
+})
+
 test('GET:404 sends an appropriate error message when given a valid but non-existend id',()=>{
     return request(app)
     .get('/api/articles/999')
