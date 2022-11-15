@@ -39,17 +39,16 @@ describe('2.GET/api/articles', ()=>{
             expect(response.body.articles).toEqual(expect.any(Array))
             expect(response.body.articles).toBeSortedBy('created_at', {descending:true})
             response.body.articles.forEach((article)=>{
-                expect(Object.keys(article)).toEqual(
-                    expect.arrayContaining([
-                        'author',
-                        'title',
-                        'article_id',
-                        'topic',
-                        'created_at',
-                        'votes',
-                        'comment_count'
-                    ])
-                )}
+                console.log(article)
+                expect(article).toEqual(expect.objectContaining({
+                    author: expect.any(String),
+                    title:expect.any(String),
+                    article_id:expect.any(Number),
+                    topic:expect.any(String),
+                    created_at:expect.any(String),
+                    votes:expect.any(Number),
+                    comment_count: expect.any(Number)
+                }))}
             )
         })
     })
