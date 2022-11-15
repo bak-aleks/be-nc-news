@@ -39,7 +39,6 @@ describe('2.GET/api/articles', ()=>{
             expect(response.body.articles).toEqual(expect.any(Array))
             expect(response.body.articles).toBeSortedBy('created_at', {descending:true})
             response.body.articles.forEach((article)=>{
-                console.log(article)
                 expect(article).toEqual(expect.objectContaining({
                     author: expect.any(String),
                     title:expect.any(String),
