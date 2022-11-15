@@ -1,6 +1,4 @@
 const db = require('../db/connection')
-const orderBy = require('lodash');
-const articles = require('../db/data/test-data/articles');
 
 exports.selectTopics = ()=>{
     return db.query("SELECT * FROM topics;").then((result)=>result.rows);
