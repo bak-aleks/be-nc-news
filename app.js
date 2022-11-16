@@ -1,13 +1,15 @@
 const express = require('express')
 const app = express()
-const {getTopics, getArticles, getArticleById, getCommentsByArticleId} = require('./controllers/news')
+const {getTopics, getArticles, getArticleById, getCommentsByArticleId, postComment} = require('./controllers/news')
 
 app.use(express.json());
 
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticleById);
-app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
+app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
+app.post('/api/articles/:article_id/comments', postComment);
+
 
 app.use((err, req, res, next)=>{
     if(err.status && err.msg){
