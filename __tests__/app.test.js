@@ -92,6 +92,15 @@ describe('4.GET/api/articles/:article_id/comments', ()=>{
             )
         })
     })
+    test('status 200, article with no comments returns an empty array',()=>{
+        return request(app)
+        .get('/api/articles/8/comments')
+        .expect(200)
+        .then((response)=>{
+            expect(response.body.comments.length).toBe(0)
+            expect(response.body.comments).toEqual(expect.any(Array))
+    })
+})
 })
 test('GET:404 sends an appropriate error message when given a valid but non-existend id',()=>{
     return request(app)
