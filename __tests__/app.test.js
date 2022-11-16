@@ -97,8 +97,7 @@ describe('4.GET/api/articles/:article_id/comments', ()=>{
         .get('/api/articles/8/comments')
         .expect(200)
         .then((response)=>{
-            expect(response.body.comments.length).toBe(0)
-            expect(response.body.comments).toEqual(expect.any(Array))
+            expect(response.body.comments).toEqual([])
     })
 })
 })
