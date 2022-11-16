@@ -153,6 +153,17 @@ test('status 400: no content in comment',()=>{
         expect(body.msg).toBe('Bad Request')
     })
 })
+test('status 400: username is not a string',()=>{
+    const newComment1 ={username:1,
+    body: "testing comment"}
+    return request(app)
+    .post('/api/articles/1/comments')
+    .send(newComment1)
+    .expect(400)
+    .then(({body})=>{
+        expect(body.msg).toBe('Bad Request')
+    })
+})
 
 test('GET:404 sends an appropriate error message when given a valid but non-existend id',()=>{
     return request(app)

@@ -42,7 +42,7 @@ exports.selectCommentsByArticleId = (article_id) =>{
 
 exports.insertComment = (article_id, username, body) =>{
     return checkArticleExists(article_id).then(()=>{
-        if(!body|| !username){
+        if(!body || !username || typeof username !== "string"){
         return Promise.reject({
             status:400,
             msg:'Bad Request'
