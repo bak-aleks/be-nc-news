@@ -101,6 +101,70 @@ describe('4.GET/api/articles/:article_id/comments', ()=>{
     })
 })
 })
+describe('5. POST /api/articles/:article_id/comments', ()=>{
+    test('POST: 201 insert new comment',()=>{
+        const newComment= {
+            username:"icellusedkars",
+            body: "testing comment"
+        }
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(newComment)
+        .expect(201)
+        .then((response)=>{
+            expect(response.body.comment).toMatchObject({
+                comment_id:expect.any(Number),
+                article_id: 1,
+                created_at:expect.any(String),
+                votes:0,
+                body:"testing comment",
+                author:"icellusedkars"
+            })
+        })
+    })
+})
+test('status 400: no body in comment',()=>{
+    const newComment1 ={username:"icellusedkars"}
+    return request(app)
+    .post('/api/articles/1/comments')
+    .send(newComment1)
+    .expect(400)
+    .then(({body})=>{
+        expect(body.msg).toBe('Bad Request')
+    })
+})
+test('status 400: no username in comment',()=>{
+    const newComment1 ={body:"something"}
+    return request(app)
+    .post('/api/articles/1/comments')
+    .send(newComment1)
+    .expect(400)
+    .then(({body})=>{
+        expect(body.msg).toBe('Bad Request')
+    })
+})
+test('status 400: no content in comment',()=>{
+    const newComment1 ={}
+    return request(app)
+    .post('/api/articles/1/comments')
+    .send(newComment1)
+    .expect(400)
+    .then(({body})=>{
+        expect(body.msg).toBe('Bad Request')
+    })
+})
+test('status 400: username is not a string',()=>{
+    const newComment1 ={username:1,
+    body: "testing comment"}
+    return request(app)
+    .post('/api/articles/1/comments')
+    .send(newComment1)
+    .expect(400)
+    .then(({body})=>{
+        expect(body.msg).toBe('Bad Request')
+    })
+})
+
 test('GET:404 sends an appropriate error message when given a valid but non-existend id',()=>{
     return request(app)
     .get('/api/articles/999/comments')

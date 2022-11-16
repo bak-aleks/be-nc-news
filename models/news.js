@@ -38,4 +38,20 @@ exports.selectCommentsByArticleId = (article_id) =>{
     .then((response)=>{
         return response.rows;
     }) 
-}
+};
+
+exports.insertComment = (article_id, username, body) =>{
+    return checkArticleExists(article_id).then(()=>{
+        if(!body || !username || typeof username !== "string"){
+        return Promise.reject({
+            status:400,
+            msg:'Bad Request'
+        })}
+        return db
+        .query(`INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;`, [article_id, username, body])
+        .then((result)=>{
+        const comment = result.rows[0]
+        return comment
+    })
+    })
+};
