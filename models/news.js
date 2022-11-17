@@ -66,3 +66,7 @@ exports.updateArticles = (article_id, inc_votes)=>{
         return article
     })
 })}
+exports.selectUsers = ()=>{
+    return db.query("SELECT * FROM users;")
+    .then((result)=>result.rows);
+}
