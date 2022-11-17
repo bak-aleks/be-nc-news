@@ -51,25 +51,6 @@ describe('2.GET/api/articles', ()=>{
             )
         })
     })
-})
-
-describe('3.GET/api/articles/:article_id', ()=>{
-    test('status 200, should respond with corresponding object', ()=>{
-        return request(app)
-        .get('/api/articles/1')
-        .expect(200)
-        .then((response)=>{
-            expect(response.body.article).toMatchObject({
-                article_id:1,
-                title: "Living in the shadow of a great man",
-                topic: "mitch",
-                author: "butter_bridge",
-                body: "I find this existence challenging",
-                created_at: '2020-07-09T20:11:00.000Z',
-                votes: 100,
-            })
-        })
-    })
     test('status 200, sorted by created_at in asc order',()=>{
         return request(app)
         .get('/api/articles?order=ASC')
@@ -121,6 +102,22 @@ describe('3.GET/api/articles/:article_id', ()=>{
         expect(response.body.articles.length).toBe(11)
         })
     })
+    test('status 400, invalid order',()=>{
+        return request(app)
+        .get('/api/articles?order=invalid')
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Invalid Order')
+        })
+    })
+    test('status 400, invalid sort',()=>{
+        return request(app)
+        .get('/api/articles?sort_by=invalid')
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Invalid Sort')
+        })
+    })
     test('status 200, filters by topic, sorts by title and orders by asc',()=>{
         return request(app)
         .get('/api/articles?chosen_topic=mitch&sort_by=title&order=ASC')
@@ -131,6 +128,25 @@ describe('3.GET/api/articles/:article_id', ()=>{
         })
         expect(response.body.articles.length).toBe(11)
         expect(response.body.articles).toBeSortedBy('title', {descending:false})
+        })
+    })
+})
+
+describe('3.GET/api/articles/:article_id', ()=>{
+    test('status 200, should respond with corresponding object', ()=>{
+        return request(app)
+        .get('/api/articles/1')
+        .expect(200)
+        .then((response)=>{
+            expect(response.body.article).toMatchObject({
+                article_id:1,
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                created_at: '2020-07-09T20:11:00.000Z',
+                votes: 100,
+            })
         })
     })
 
