@@ -123,6 +123,48 @@ describe('5. POST /api/articles/:article_id/comments', ()=>{
         })
     })
 })
+describe('6.PATCH /api/articles/:article_id', ()=>{
+    test('patch 200 responds with updated object', ()=>{
+        const updatedArticle ={inc_votes: 100}
+        return request(app)
+        .patch('/api/articles/1')
+        .send(updatedArticle)
+        .expect(200)
+        .then((response)=>{
+            expect(response.body.article).toMatchObject({
+                title: 'Living in the shadow of a great man',
+                topic:'mitch',
+                article_id: 1,
+                created_at:expect.any(String),
+                votes:200,
+                body:'I find this existence challenging',
+                author:'butter_bridge'
+            })
+        })
+    })
+})
+
+test('status 400: no update given',()=>{
+    const newUpdate ={}
+    return request(app)
+    .patch('/api/articles/1')
+    .send(newUpdate)
+    .expect(400)
+    .then(({body})=>{
+        expect(body.msg).toBe('Bad Request')
+    })
+})
+test('status 400: type of votes in update is not a number',()=>{
+    const newUpdate ={inc_votes:'hello'}
+    return request(app)
+    .patch('/api/articles/1')
+    .send(newUpdate)
+    .expect(400)
+    .then(({body})=>{
+        expect(body.msg).toBe('Bad Request')
+    })
+})
+
 test('status 400: no body in comment',()=>{
     const newComment1 ={username:"icellusedkars"}
     return request(app)

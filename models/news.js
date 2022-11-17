@@ -55,3 +55,14 @@ exports.insertComment = (article_id, username, body) =>{
     })
     })
 };
+
+exports.updateArticles = (article_id, inc_votes)=>{
+    return checkArticleExists(article_id).then(()=>{
+    if(!inc_votes || typeof inc_votes !== "number"){
+    return Promise.reject({status:400,msg:'Bad Request'})}
+    return db.query('UPDATE articles SET votes = votes + $2 WHERE article_id = $1 RETURNING *;', [article_id, inc_votes])
+    .then((result)=>{
+        const article = result.rows[0]
+        return article
+    })
+})}
