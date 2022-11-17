@@ -1,4 +1,4 @@
-const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId, insertComment, updateArticles} = require("../models/news")
+const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId, insertComment, updateArticles, selectUsers} = require("../models/news")
 
 exports.getTopics = (req, res, next)=>{
     selectTopics().then((topics)=>{
