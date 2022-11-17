@@ -51,6 +51,14 @@ describe('2.GET/api/articles', ()=>{
             )
         })
     })
+    test('status 200, sorted by created_at in desc order DEFAULT',()=>{
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then((response)=>{
+            expect(response.body.articles).toBeSortedBy('created_at', {descending:true})
+        })
+    })
     test('status 200, sorted by created_at in asc order',()=>{
         return request(app)
         .get('/api/articles?order=ASC')
