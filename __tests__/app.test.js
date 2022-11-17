@@ -154,16 +154,16 @@ describe('3.GET/api/articles/:article_id', ()=>{
                 body: "I find this existence challenging",
                 created_at: '2020-07-09T20:11:00.000Z',
                 votes: 100,
+                comment_count:11
             })
         })
     })
-
     test('GET:404 sends an appropriate error message when given a valid but non-existend id',()=>{
         return request(app)
         .get('/api/articles/999')
         .expect(404)
         .then(({body})=>{
-            expect(body.msg).toBe('Article does not exist')
+            expect(body.msg).toBe('Article not found')
         })
     })
     test('GET:400 sends an appropriate error message when given an invialid id',()=>{
