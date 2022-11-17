@@ -5,18 +5,6 @@ exports.selectTopics = ()=>{
     return db.query("SELECT * FROM topics;").then((result)=>result.rows);
 }
 
-exports.selectArticles = (sort_by = 'created_at', order='DESC') =>{   
-    let queryStr = `SELECT articles.author, articles.title, articles.topic, articles.article_id, articles.created_at, articles.votes, COUNT(comments.article_id)::int AS comment_count 
-    FROM articles 
-    LEFT JOIN comments ON comments.article_id = articles.article_id 
-    GROUP BY articles.article_id` 
-
-    queryStr +=` ORDER BY ${sort_by} ${order};`
-
-    return db.query(queryStr).then((result)=>{
-        return result.rows
-    })
-}
 exports.selectArticleById = (article_id) =>{
     return db
     .query(`SELECT * FROM articles WHERE article_id = $1;`, [article_id])
@@ -69,4 +57,27 @@ exports.updateArticles = (article_id, inc_votes)=>{
 exports.selectUsers = ()=>{
     return db.query("SELECT * FROM users;")
     .then((result)=>result.rows);
+}
+
+exports.selectArticles = (sort_by = 'created_at', order='DESC', chosen_topic) =>{ 
+    const validOrder = ['DESC', 'ASC']  
+    const validSort = ['author', 'title', 'article_id', 'topic', 'created_at','votes', 'comment_count']
+    if(!validSort.includes(sort_by)){
+        return Promise.reject({status:400, msg:'Invalid Sort'})
+    }
+    if(!validOrder.includes(order)){
+        return Promise.reject({status:400, msg:'Invalid Order'})
+    }
+    let queryStr = `SELECT articles.author, articles.title, articles.topic, articles.article_id, articles.created_at, articles.votes, COUNT(comments.article_id)::int AS comment_count 
+    FROM articles 
+    LEFT JOIN comments ON comments.article_id = articles.article_id`;
+    const queryValues = [];
+    if (chosen_topic) {
+        queryStr +=` WHERE articles.topic = $1`;
+        queryValues.push(chosen_topic)
+    }
+
+    queryStr +=` GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
+   
+    return db.query(queryStr, queryValues).then((result)=> result.rows)
 }

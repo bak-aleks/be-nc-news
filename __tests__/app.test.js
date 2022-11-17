@@ -51,6 +51,93 @@ describe('2.GET/api/articles', ()=>{
             )
         })
     })
+    test('status 200, sorted by created_at in desc order DEFAULT',()=>{
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then((response)=>{
+            expect(response.body.articles).toBeSortedBy('created_at', {descending:true})
+        })
+    })
+    test('status 200, sorted by created_at in asc order',()=>{
+        return request(app)
+        .get('/api/articles?order=ASC')
+        .expect(200)
+        .then((response)=>{
+            expect(response.body.articles).toBeSortedBy('created_at', {descending:false})
+        })
+    })
+    test('status 200, sorted by created_at in desc order',()=>{
+        return request(app)
+        .get('/api/articles?order=DESC')
+        .expect(200)
+        .then((response)=>{
+            expect(response.body.articles).toBeSortedBy('created_at', {descending:true})
+        })
+    })
+    test('status 200, sorted by author is desc order',()=>{
+        return request(app)
+        .get('/api/articles?sort_by=author')
+        .expect(200)
+        .then((response)=>{
+            expect(response.body.articles).toBeSortedBy('author', {descending:true})
+        })
+    })
+    test('status 200, sorted by author is asc order',()=>{
+        return request(app)
+        .get('/api/articles?sort_by=author&order=ASC')
+        .expect(200)
+        .then((response)=>{
+            expect(response.body.articles).toBeSortedBy('author', {descending:false})
+        })
+    })
+    test('status 200, sorted by topic is asc order',()=>{
+        return request(app)
+        .get('/api/articles?sort_by=topic&order=ASC')
+        .expect(200)
+        .then((response)=>{
+            expect(response.body.articles).toBeSortedBy('topic', {descending:false})
+        })
+    })
+    test('status 200, filters by topic',()=>{
+        return request(app)
+        .get('/api/articles?chosen_topic=mitch')
+        .expect(200)
+        .then((response)=>{
+        response.body.articles.forEach((article)=>{
+            expect(article.topic).toBe('mitch')
+        })
+        expect(response.body.articles.length).toBe(11)
+        })
+    })
+    test('status 400, invalid order',()=>{
+        return request(app)
+        .get('/api/articles?order=invalid')
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Invalid Order')
+        })
+    })
+    test('status 400, invalid sort',()=>{
+        return request(app)
+        .get('/api/articles?sort_by=invalid')
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Invalid Sort')
+        })
+    })
+    test('status 200, filters by topic, sorts by title and orders by asc',()=>{
+        return request(app)
+        .get('/api/articles?chosen_topic=mitch&sort_by=title&order=ASC')
+        .expect(200)
+        .then((response)=>{
+        response.body.articles.forEach((article)=>{
+            expect(article.topic).toBe('mitch')
+        })
+        expect(response.body.articles.length).toBe(11)
+        expect(response.body.articles).toBeSortedBy('title', {descending:false})
+        })
+    })
 })
 
 describe('3.GET/api/articles/:article_id', ()=>{
@@ -70,6 +157,7 @@ describe('3.GET/api/articles/:article_id', ()=>{
             })
         })
     })
+
     test('GET:404 sends an appropriate error message when given a valid but non-existend id',()=>{
         return request(app)
         .get('/api/articles/999')

@@ -7,13 +7,6 @@ exports.getTopics = (req, res, next)=>{
     .catch(next)
 }
 
-exports.getArticles = (req, res, next)=>{
-    const {sort_by, order} = req.query
-    selectArticles(sort_by, order).then((articles)=>{
-        res.status(200).send({articles:articles})
-    })
-    .catch(next)
-}
 exports.getArticleById = (req, res, next)=>{
     const { article_id } = req.params;
     selectArticleById(article_id)
@@ -52,6 +45,13 @@ exports.patchArticleById = (req, res, next) =>{
 exports.getUsers = (req, res, next)=>{
     selectUsers().then((users)=>{
         res.status(200).send({users})
+    })
+    .catch(next)
+}
+exports.getArticles = (req, res, next)=>{
+    const {sort_by, order, chosen_topic} = req.query
+    selectArticles(sort_by, order, chosen_topic).then((articles)=>{
+        res.status(200).send({articles})
     })
     .catch(next)
 }

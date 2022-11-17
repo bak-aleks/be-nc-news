@@ -10,14 +10,17 @@ app.get('/api/articles/:article_id', getArticleById);
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
 app.post('/api/articles/:article_id/comments', postComment);
 app.patch('/api/articles/:article_id', patchArticleById);
-app.get('/api/users', getUsers)
+app.get('/api/users', getUsers);
 
 app.use((err, req, res, next)=>{
     if(err.status && err.msg){
         res.status(err.status).send({msg: err.msg})
     }else if(err.code ==='22P02'){
         res.status(400).send({msg:'Invalid id'})
-    }else res.status(500).send({msg:'Internal Server Error'})
+    }else {
+        console.log(err)
+        res.status(500).send({msg:'Internal Server Error'})
+    }  
 })
 
 app.get("*", function(req, res){
