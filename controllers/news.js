@@ -1,4 +1,4 @@
-const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId, insertComment, updateArticles, selectUsers} = require("../models/news")
+const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId, insertComment, updateArticles, selectUsers, removeComment} = require("../models/news")
 
 exports.getTopics = (req, res, next)=>{
     selectTopics().then((topics)=>{
@@ -53,5 +53,11 @@ exports.getArticles = (req, res, next)=>{
     selectArticles(sort_by, order, chosen_topic).then((articles)=>{
         res.status(200).send({articles})
     })
+    .catch(next)
+}
+exports.deleteComment = (req, res, next)=>{
+    const{comment_id} = req.params;
+    console.log(comment_id)
+    removeComment(comment_id).then(()=>res.send(204).send())
     .catch(next)
 }

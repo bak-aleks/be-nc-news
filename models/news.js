@@ -1,5 +1,5 @@
 const db = require('../db/connection')
-const{checkArticleExists} = require('../utils/db.js')
+const{checkArticleExists, checkCommentExists} = require('../utils/db.js')
 
 exports.selectTopics = ()=>{
     return db.query("SELECT * FROM topics;").then((result)=>result.rows);
@@ -84,4 +84,9 @@ exports.selectArticles = (sort_by = 'created_at', order='DESC', chosen_topic) =>
     queryStr +=` GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`;
    
     return db.query(queryStr, queryValues).then((result)=> result.rows)
+}
+exports.removeComment = async(comment_id)=>{
+    await checkCommentExists(comment_id);
+    const result = await db.query("DELETE FROM comments WHERE comment_id=$1;",[comment_id]);
+    return result.rows
 }
