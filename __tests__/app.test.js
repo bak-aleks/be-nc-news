@@ -372,7 +372,17 @@ describe('7. GET/api/users', ()=>{
         })
     })
 })
-
+describe("DELETE api/comments/comment_id",()=>{
+    test("status 204, responds with empty body",()=>{
+        return request(app).delete("/api/comments/1").expect(204)
+    })
+    test("status 404, error message when given a non-existent id",()=>{
+        return request(app).delete("/api/comments/999").expect(404)
+        .then((response)=>{
+            expect(response.body.msg).toBe('Comment not found')
+        })
+    })
+})
 
 
 test('404 status', ()=>{
