@@ -3,8 +3,8 @@ const seed = require('../db/seeds/seed')
 const app = require('../app')
 const db = require('../db/connection')
 const testData = require('../db/data/test-data')
-const { response } = require('../app')
-
+//const { response } = require('../app')
+const endpoints = require('../endpoints.json')
 
 beforeEach(()=>seed(testData))
 
@@ -372,7 +372,7 @@ describe('7. GET/api/users', ()=>{
         })
     })
 })
-describe("DELETE api/comments/comment_id",()=>{
+describe(" 8. DELETE api/comments/comment_id",()=>{
     test("status 204, responds with empty body",()=>{
         return request(app).delete("/api/comments/1").expect(204)
     })
@@ -394,6 +394,16 @@ describe("DELETE api/comments/comment_id",()=>{
     })
 })
 
+describe('9. GET/api', ()=>{
+    test('status 200, should respond with endpoints',()=>{
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then((response)=>{
+            expect(response.body.msg).toEqual(endpoints);
+        })
+    })
+})
 
 test('404 status', ()=>{
     return request(app)

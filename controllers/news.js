@@ -1,4 +1,5 @@
 const { selectTopics, selectArticles, selectArticleById, selectCommentsByArticleId, insertComment, updateArticles, selectUsers, removeComment} = require("../models/news")
+const endpoints = require('../endpoints.json')
 
 exports.getTopics = (req, res, next)=>{
     selectTopics().then((topics)=>{
@@ -57,7 +58,10 @@ exports.getArticles = (req, res, next)=>{
 }
 exports.deleteComment = (req, res, next)=>{
     const{comment_id} = req.params;
-    console.log(comment_id)
     removeComment(comment_id).then(()=>res.send(204).send())
+    .catch(next)
+}
+exports.getEndPoints = (req, res, next) =>{
+    res.status(200).send({msg:endpoints})
     .catch(next)
 }
